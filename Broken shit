@@ -1,0 +1,39 @@
+@bot.event
+async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
+  channel = channelidhere
+  if payload.channel_id != channel:
+    return
+  if str(payload.emoji) == "insertemoji":
+    role = discord.utils.get(payload.member.guild.roles, name="Hooray")
+    await payload.member.add_roles(role)
+
+###Here's a different, also broken code piece as well. Same concept as above..
+
+
+bot.role_channel_id = chID
+bot.emoji_to_role = {
+            discord.PartialEmoji(name=':emName'): roleID, 
+            discord.PartialEmoji(name=':emName:'): roleID
+           }
+@bot.event
+async def on_raw_reaction_add(payload: discord.RawReactionActionEvent):
+        if payload.channel_id != bot.role_channel_id:
+            return
+
+        guild = bot.get_guild(payload.guild_id)
+        if guild is None:
+            return
+
+        try:
+            role_id = bot.emoji_to_role[payload.emoji]
+        except KeyError:
+            return
+
+        role = guild.get_role(role_id)
+        if role is None:
+            return
+
+        try:
+            await payload.member.add_roles(role)
+        except discord.HTTPException:
+            pass
